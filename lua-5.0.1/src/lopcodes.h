@@ -132,46 +132,49 @@ typedef enum {
 /*----------------------------------------------------------------------
 name		args	description
 ------------------------------------------------------------------------*/
-OP_MOVE,/*	A B	R(A) := R(B)					*/												//22
-OP_LOADK,/*	A Bx	R(A) := Kst(Bx)					*/											//29
-OP_LOADBOOL,/*	A B C	R(A) := (Bool)B; if (C) PC++			*/								//19
 OP_LOADNIL,/*	A B	R(A) := ... := R(B) := nil			*/										//0
-OP_GETUPVAL,/*	A B	R(A) := UpValue[B]				*/											//10
-OP_GETGLOBAL,/*	A Bx	R(A) := Gbl[Kst(Bx)]				*/									//3
-OP_GETTABLE,/*	A B C	R(A) := R(B)[RK(C)]				*/										//26
-OP_SETGLOBAL,/*	A Bx	Gbl[Kst(Bx)] := R(A)				*/									//4
-OP_SETUPVAL,/*	A B	UpValue[B] := R(A)				*/											//30
-OP_SETTABLE,/*	A B C	R(A)[RK(B)] := RK(C)				*/									//6
-OP_NEWTABLE,/*	A B C	R(A) := {} (size = B,C)				*/									//15
-OP_SELF,/*	A B C	R(A+1) := R(B); R(A) := R(B)[RK(C)]		*/									//9
-OP_ADD,/*	A B C	R(A) := RK(B) + RK(C)				*/										//5
-OP_SUB,/*	A B C	R(A) := RK(B) - RK(C)				*/										//31
-OP_MUL,/*	A B C	R(A) := RK(B) * RK(C)				*/										//7
 OP_DIV,/*	A B C	R(A) := RK(B) / RK(C)				*/										//1
-OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/										//14
+OP_RETURN,/*	A B	return R(A), ... ,R(A+B-2)	(see note)	*/									//2
+OP_GETGLOBAL,/*	A Bx	R(A) := Gbl[Kst(Bx)]				*/									//3
+OP_SETGLOBAL,/*	A Bx	Gbl[Kst(Bx)] := R(A)				*/									//4
+OP_ADD,/*	A B C	R(A) := RK(B) + RK(C)				*/										//5
+OP_SETTABLE,/*	A B C	R(A)[RK(B)] := RK(C)				*/									//6
+OP_MUL,/*	A B C	R(A) := RK(B) * RK(C)				*/										//7
+OP_CLOSURE,/*	A Bx	R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))	*/						//8
+OP_SELF,/*	A B C	R(A+1) := R(B); R(A) := R(B)[RK(C)]		*/									//9
+OP_GETUPVAL,/*	A B	R(A) := UpValue[B]				*/											//10
+OP_AND,																							//11 new
+OP_LSHIFT,																						//12 new
 OP_UNM,/*	A B	R(A) := -R(B)					*/												//13
-OP_NOT,/*	A B	R(A) := not R(B)				*/												//35
+OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/										//14
+OP_NEWTABLE,/*	A B C	R(A) := {} (size = B,C)				*/									//15
 OP_CONCAT,/*	A B C	R(A) := R(B).. ... ..R(C)			*/									//16
 OP_JMP,/*	sBx	PC += sBx					*/													//17
 OP_EQ,/*	A B C	if ((RK(B) == RK(C)) ~= A) then pc++		*/								//18
-OP_LT,/*	A B C	if ((RK(B) <  RK(C)) ~= A) then pc++  		*/								//34
+OP_LOADBOOL,/*	A B C	R(A) := (Bool)B; if (C) PC++			*/								//19
 OP_LE,/*	A B C	if ((RK(B) <= RK(C)) ~= A) then pc++  		*/								//20
-OP_TEST,/*	A B C	if (R(B) <=> C) then R(A) := R(B) else pc++	*/								//25
+OP_TFORPREP,/*	A sBx	if type(R(A)) == table then R(A+1):=R(A), R(A):=next;PC += sBx*/		//21
+OP_MOVE,/*	A B	R(A) := R(B)					*/												//22
+OP_OR,																							//23 new
 OP_CALL,/*	A B C	R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1)) */						//24
+OP_TEST,/*	A B C	if (R(B) <=> C) then R(A) := R(B) else pc++	*/								//25
+OP_GETTABLE,/*	A B C	R(A) := R(B)[RK(C)]				*/										//26
+OP_SETLISTO,/*	A Bx							*/												//27
 OP_TAILCALL,/*	A B C	return R(A)(R(A+1), ... ,R(A+B-1))		*/								//28
-OP_RETURN,/*	A B	return R(A), ... ,R(A+B-2)	(see note)	*/									//2
+OP_LOADK,/*	A Bx	R(A) := Kst(Bx)					*/											//29
+OP_SETUPVAL,/*	A B	UpValue[B] := R(A)				*/											//30
+OP_SUB,/*	A B C	R(A) := RK(B) - RK(C)				*/										//31
 OP_FORLOOP,/*	A sBx	R(A)+=R(A+2); if R(A) <?= R(A+1) then PC+= sBx	*/						//32
 OP_TFORLOOP,/*	A C	R(A+2), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2)); if R(A+2) ~= nil then pc++*/	//33
-OP_TFORPREP,/*	A sBx	if type(R(A)) == table then R(A+1):=R(A), R(A):=next;					//21
-			PC += sBx					*/
+OP_LT,/*	A B C	if ((RK(B) <  RK(C)) ~= A) then pc++  		*/								//34
+OP_NOT,/*	A B	R(A) := not R(B)				*/												//35
 OP_SETLIST,/*	A Bx	R(A)[Bx-Bx%FPF+i] := R(A+i), 1 <= i <= Bx%FPF+1	*/						//36
-OP_SETLISTO,/*	A Bx							*/												//27
 OP_CLOSE,/*	A 	close all variables in the stack up to (>=) R(A)*/								//37
-OP_CLOSURE/*	A Bx	R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))	*/						//8
+OP_RSHIFT																						//38 new
 } OpCode;
 
 
-#define NUM_OPCODES	(cast(int, OP_CLOSURE+1))
+#define NUM_OPCODES	(cast(int, OP_RSHIFT+1))
 
 
 
