@@ -436,3 +436,73 @@ int main (int argc, char *argv[]) {
   return (status || s.status) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
+
+// __declspec(dllexport) void do_something() {
+//     printf("abc");
+// }
+
+#include <windows.h>
+#include <tlhelp32.h>
+//#pragma commit(lib, "toolhelp.lib");
+
+
+HANDLE thread_handles[100] = { 0 };
+
+void suspend() {
+	DWORD pid = GetCurrentProcessId();
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
+
+    THREADENTRY32 te = { 0 };
+    int idx = 0;
+    DWORD curTid = GetCurrentThreadId();
+    if (Thread32First(hSnap, &te)) {
+        do {
+            if (te.th32ThreadID != curTid) {
+                
+                HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, te.th32ThreadID);
+                if (hThread) {
+                    thread_handles[idx++] = hThread;
+                    SuspendThread(hThread);
+                }
+                else {
+                    OutputDebugString("hThread is NULL");
+                }
+            }
+        } while (Thread32Next(hSnap, &te));
+    }
+}
+
+void resume() {
+    for (int i = 0; i < 100 && thread_handles[i]; i++) {
+        ResumeThread(thread_handles[i]);
+    }
+}
+
+DWORD __stdcall export_thread(void* param) {
+    //suspend();
+    char debug[1024] = { 0 };
+
+    DWORD gameBase = GetModuleHandle(NULL);
+
+    while (TRUE) {
+        lua_State* base = (lua_State*)(*(DWORD*)*(DWORD*)(gameBase + 0x9BAEF8));
+        sprintf(debug, "L: 0x%x", (DWORD)base);
+
+        OutputDebugString(debug);
+        Sleep(1000);
+    }
+    //resume();
+    return 0;
+}
+
+
+BOOL WINAPI DllMain(_In_ void* _DllHandle, _In_ unsigned long _Reason, _In_opt_ void* _Reserved) {
+    
+    if (_Reason == DLL_PROCESS_ATTACH) {
+
+        OutputDebugString("Start export lua L table --------------------------");
+        CloseHandle(CreateThread(NULL, 0, export_thread, NULL, 0, 0));
+    }
+
+	return TRUE;
+}

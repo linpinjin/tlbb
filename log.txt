@@ -1,0 +1,38 @@
+LUA LÖ¸Õë»ùÖ·£º
+00DFF14F         | CC                    | int3                                                      |
+00DFF150         | 55                    | push ebp                                                  |
+00DFF151         | 8BEC                  | mov ebp,esp                                               |
+00DFF153         | 6A FF                 | push FFFFFFFF                                             |
+00DFF155         | 68 28D3F700           | push game.F7D328                                          |
+00DFF15A         | 64:A1 00000000        | mov eax,dword ptr fs:[0]                                  |
+00DFF160         | 50                    | push eax                                                  |
+00DFF161         | A1 04223201           | mov eax,dword ptr ds:[1322204]                            |
+00DFF166         | 33C5                  | xor eax,ebp                                               |
+00DFF168         | 50                    | push eax                                                  |
+00DFF169         | 8D45 F4               | lea eax,dword ptr ss:[ebp-C]                              |
+00DFF16C         | 64:A3 00000000        | mov dword ptr fs:[0],eax                                  |
+00DFF172         | A1 FCAE3201           | mov eax,dword ptr ds:[132AEFC]                            |
+00DFF177         | A8 01                 | test al,1                                                 |
+00DFF179         | 75 39                 | jne game.DFF1B4                                           |
+00DFF17B         | 83C8 01               | or eax,1                                                  |
+00DFF17E         | A3 FCAE3201           | mov dword ptr ds:[132AEFC],eax                            |
+00DFF183         | C745 FC 00000000      | mov dword ptr ss:[ebp-4],0                                |
+00DFF18A         | C705 F8AE3201 0000000 | mov dword ptr ds:[132AEF8],0                              |
+00DFF194         | 6A 00                 | push 0                                                    |
+00DFF196         | 6A 01                 | push 1                                                    |
+00DFF198         | C645 FC 01            | mov byte ptr ss:[ebp-4],1                                 |
+00DFF19C         | FF15 D831FA00         | call dword ptr ds:[<&?Create@LuaState@LuaPlus@@SAPAV12@_N |
+00DFF1A2         | 68 5023FA00           | push game.FA2350                                          |
+00DFF1A7         | A3 F8AE3201           | mov dword ptr ds:[132AEF8],eax                            | lua *L
+00DFF1AC         | E8 EC941300           | call game.F3869D                                          |
+00DFF1B1         | 83C4 0C               | add esp,C                                                 |
+00DFF1B4         | A1 F8AE3201           | mov eax,dword ptr ds:[132AEF8]                            |
+00DFF1B9         | 8B4D F4               | mov ecx,dword ptr ss:[ebp-C]                              |
+00DFF1BC         | 64:890D 00000000      | mov dword ptr fs:[0],ecx                                  | ecx:"setmetatable(_G, {__index = LoginSelectServer_Env});"
+00DFF1C3         | 59                    | pop ecx                                                   | ecx:"setmetatable(_G, {__index = LoginSelectServer_Env});"
+00DFF1C4         | 8BE5                  | mov esp,ebp                                               |
+00DFF1C6         | 5D                    | pop ebp                                                   |
+00DFF1C7         | C3                    | ret                                                       |
+00DFF1C8         | CC                    | int3                                                      |
+
+

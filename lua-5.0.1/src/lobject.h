@@ -39,10 +39,12 @@ typedef union GCObject GCObject;
 /*
 ** Common header in struct form
 */
+
+#pragma pack(push, 1)
 typedef struct GCheader {
   CommonHeader;
 } GCheader;
-
+#pragma pack(pop)
 
 
 
