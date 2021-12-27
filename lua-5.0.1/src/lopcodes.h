@@ -146,7 +146,7 @@ OP_GETUPVAL,/*	A B	R(A) := UpValue[B]				*/											//10
 OP_AND,																							//11 new
 OP_LSHIFT,																						//12 new
 OP_UNM,/*	A B	R(A) := -R(B)					*/												//13
-OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/										//14
+OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/										//14 Change to XOR
 OP_NEWTABLE,/*	A B C	R(A) := {} (size = B,C)				*/									//15
 OP_CONCAT,/*	A B C	R(A) := R(B).. ... ..R(C)			*/									//16
 OP_JMP,/*	sBx	PC += sBx					*/													//17

@@ -618,10 +618,31 @@ void luaK_infix (FuncState *fs, BinOpr op, expdesc *v) {
 
 static void codebinop (FuncState *fs, expdesc *res, BinOpr op,
                        int o1, int o2) {
-  if (op <= OPR_POW) {  /* arithmetic operator? */
-    OpCode opc = cast(OpCode, (op - OPR_ADD) + OP_ADD);  /* ORDER OP */
+    //OPR_ADD, OPR_SUB, OPR_MULT, OPR_DIV, OPR_POW,
+  if (op == OPR_ADD) {  /* arithmetic operator? */
+    OpCode opc = cast(OpCode, OP_ADD);  /* ORDER OP */
     res->info = luaK_codeABC(fs, opc, 0, o1, o2);
     res->k = VRELOCABLE;
+  }
+  else if(op == OPR_SUB) {  /* arithmetic operator? */
+	  OpCode opc = cast(OpCode, OP_SUB);  /* ORDER OP */
+	  res->info = luaK_codeABC(fs, opc, 0, o1, o2);
+	  res->k = VRELOCABLE;
+  }
+  else if(op == OPR_MULT) {  /* arithmetic operator? */
+	  OpCode opc = cast(OpCode, OP_MUL);  /* ORDER OP */
+	  res->info = luaK_codeABC(fs, opc, 0, o1, o2);
+	  res->k = VRELOCABLE;
+  }
+  else if(op == OPR_DIV) {  /* arithmetic operator? */
+	  OpCode opc = cast(OpCode, OP_DIV);  /* ORDER OP */
+	  res->info = luaK_codeABC(fs, opc, 0, o1, o2);
+	  res->k = VRELOCABLE;
+  }
+  else if(op == OPR_POW) {  /* arithmetic operator? */
+	  OpCode opc = cast(OpCode, OP_POW);  /* ORDER OP */
+	  res->info = luaK_codeABC(fs, opc, 0, o1, o2);
+	  res->k = VRELOCABLE;
   }
   else {  /* test operator */
     static const OpCode ops[] = {OP_EQ, OP_EQ, OP_LT, OP_LE, OP_LT, OP_LE};
